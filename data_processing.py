@@ -92,8 +92,8 @@ class Table:
 table1 = Table('cities', cities)
 table2 = Table('countries', countries)
 table3 = Table('players', players)
-table4 = Table('teams', players)
-table5 = Table('titanic', players)
+table4 = Table('teams', teams)
+table5 = Table('titanic', titanic)
 my_DB = DB()
 my_DB.insert(table1)
 my_DB.insert(table2)
@@ -102,6 +102,31 @@ my_DB.insert(table4)
 my_DB.insert(table5)
 my_table1 = my_DB.search('cities')
 my_table3 = my_DB.search('players')
+my_table4 = my_DB.search('teams')
+my_table3_filtered = my_table3.filter(lambda x: 'ia' in x['team']).filter(lambda x: float(x['minutes']) < 200).filter(lambda x: float(x['passes']) > 100)
+for i in my_table3_filtered.table:
+    print(f"name: {i['surname']} team: {i['team']} position: {i['position']}")
+print(table4)
+below_10 = []
+above_equal10 = []
+forward = []
+midfield = []
+my_table4_filtered1 = my_table4.filter(lambda x: int(x['ranking']) < 10)
+for i in my_table4_filtered1.table:
+    below_10.append(int(i['games']))
+print(sum(below_10) / len(below_10))
+my_table4_filtered2 = my_table4.filter(lambda x: int(x['ranking']) >= 10)
+for i in my_table4_filtered2.table:
+    above_equal10.append(int(i['games']))
+print(sum(above_equal10) / len(above_equal10))
+my_table3_filtered1 = my_table3.filter(lambda x: x['position'] == 'forward')
+for i in my_table3_filtered1.table:
+    forward.append(int(i['passes']))
+print(sum(forward) / len(forward))
+my_table3_filtered2 = my_table3.filter(lambda x: x['position'] == 'midfielder')
+for i in my_table3_filtered2.table:
+    midfield.append(int(i['passes']))
+print(sum(midfield) / len(midfield))
 
 
 # print("Test filter: only filtering out cities in Italy")
