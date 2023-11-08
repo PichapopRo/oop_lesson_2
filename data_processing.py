@@ -138,6 +138,15 @@ my_table5_filtered1 = my_table5.filter(lambda x: x['class'] == '3')
 for i in my_table5_filtered1.table:
     third_class.append(float(i['fare']))
 print(f"Avg Third clss: {sum(third_class) / len(third_class)}")
+my_table5_filtered1 = my_table5.filter(lambda x: x['survived'] == 'yes').filter(lambda x: x['gender'] == 'M')
+my_table5_filtered_male = my_table5.filter(lambda x: x['gender'] == 'M')
+men_rate = (len(my_table5_filtered1.table) / len(my_table5_filtered_male.table)) * 100
+print(f"Men surviving rate: {men_rate:.2f} %")
+my_table5_filtered2 = my_table5.filter(lambda x: x['survived'] == 'yes').filter(lambda x: x['gender'] == 'F')
+my_table5_filtered_woman = my_table5.filter(lambda x: x['gender'] == 'F')
+women_rate = (len(my_table5_filtered2.table) / len(my_table5_filtered_woman.table)) * 100
+print(f"Men surviving rate: {women_rate:.2f} %")
+
 
 # print("Test filter: only filtering out cities in Italy")
 # my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
