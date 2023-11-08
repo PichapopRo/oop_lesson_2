@@ -103,6 +103,7 @@ my_DB.insert(table5)
 my_table1 = my_DB.search('cities')
 my_table3 = my_DB.search('players')
 my_table4 = my_DB.search('teams')
+my_table5 = my_DB.search('titanic')
 my_table3_filtered = my_table3.filter(lambda x: 'ia' in x['team']).filter(lambda x: float(x['minutes']) < 200).filter(lambda x: float(x['passes']) > 100)
 for i in my_table3_filtered.table:
     print(f"name: {i['surname']} team: {i['team']} position: {i['position']}")
@@ -118,16 +119,25 @@ print(sum(below_10) / len(below_10))
 my_table4_filtered2 = my_table4.filter(lambda x: int(x['ranking']) >= 10)
 for i in my_table4_filtered2.table:
     above_equal10.append(int(i['games']))
-print(sum(above_equal10) / len(above_equal10))
+print(f"Avg games ranking more than 10 or equal: {sum(above_equal10) / len(above_equal10)}")
 my_table3_filtered1 = my_table3.filter(lambda x: x['position'] == 'forward')
 for i in my_table3_filtered1.table:
     forward.append(int(i['passes']))
-print(sum(forward) / len(forward))
+print(f"Avg passes forward: {sum(forward) / len(forward)}")
 my_table3_filtered2 = my_table3.filter(lambda x: x['position'] == 'midfielder')
 for i in my_table3_filtered2.table:
     midfield.append(int(i['passes']))
-print(sum(midfield) / len(midfield))
-
+print(f"Avg passes midfielder: {sum(midfield) / len(midfield)}")
+first_class = []
+my_table5_filtered = my_table5.filter(lambda x: x['class'] == '1')
+for i in my_table5_filtered.table:
+    first_class.append(float(i['fare']))
+print(f"Avg First clss: {sum(first_class) / len(first_class)}")
+third_class = []
+my_table5_filtered1 = my_table5.filter(lambda x: x['class'] == '3')
+for i in my_table5_filtered1.table:
+    third_class.append(float(i['fare']))
+print(f"Avg Third clss: {sum(third_class) / len(third_class)}")
 
 # print("Test filter: only filtering out cities in Italy")
 # my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
