@@ -3,6 +3,7 @@ import csv, os
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
+
 cities = []
 with open(os.path.join(__location__, 'Cities.csv')) as f:
     rows = csv.DictReader(f)
@@ -70,12 +71,68 @@ class Table:
                 filtered_table.table.append(item1)
         return filtered_table
     
+    def __is_float(self, element):
+        if element is None:
+            return False
+        try:
+            float(element)
+            return True
+        except ValueError:
+            return False
+
     def aggregate(self, function, aggregation_key):
         temps = []
         for item1 in self.table:
-            temps.append(float(item1[aggregation_key]))
+            if self.__is_float(item1[aggregation_key]):
+                temps.append(float(item1[aggregation_key]))
+            else:
+                temps.append(item1[aggregation_key])
         return function(temps)
-    
+
+    def pivot_table(self, keys_to_pivot_list: list, keys_to_aggregate_list: list, aggregate_func_list: list):
+        unique_data_set = {tuple((key, item[key])
+                                 for key in keys_to_pivot_list) for item in self.table}
+        sorted_data = sorted([dict(item) for item in unique_data_set], key=lambda x: tuple(
+            x[key] for key in reversed(keys_to_pivot_list)))
+        temps = []
+        for item in sorted_data:
+            filtered = self
+            aggregate = []
+            for key in item:
+                filtered = filtered.filter(lambda x: x[key] == item[key])
+            for x, y in enumerate(keys_to_aggregate_list):
+                aggregate.append(filtered.aggregate(aggregate_func_list[x], y))
+            temps.append([list(item.values()), aggregate])
+        return reversed(temps)
+
+    # Here is an example of of unique_values_list for
+    # keys_to_pivot_list = ['embarked', 'gender', 'class']
+    # unique_values_list =
+    # [['Southampton', 'Cherbourg', 'Queenstown'], ['M', 'F'], ['3', '2',
+    # '1']]
+
+    # Get the combination of unique_values_list
+    # You will make use of the function you implemented in Task 2
+
+    import combination_gen
+
+    # code that makes a call to combination_gen.gen_comb_list
+
+    # Example output:
+    # [['Southampton', 'M', '3'],
+    #  ['Cherbourg', 'M', '3'],
+    #  ...
+    #  ['Queenstown', 'F', '1']]
+
+    # code that filters each combination
+
+    # for each filter table applies the relevant aggregate functions
+    # to keys to aggregate
+    # the aggregate functions is listed in aggregate_func_list
+    # to keys to aggregate is listed in keys_to_aggreagte_list
+
+    # return a pivot table
+
     def select(self, attributes_list):
         temps = []
         for item1 in self.table:
@@ -127,6 +184,32 @@ my_table3_filtered2 = my_table3.filter(lambda x: x['position'] == 'midfielder')
 for i in my_table3_filtered2.table:
     midfield.append(int(i['passes']))
 print(sum(midfield) / len(midfield))
+
+tb3 = table5
+my_table3 = my_DB.search('cities').join(my_DB.search('countries'), 'country')
+my_table_player = my_DB.search('players').join(my_DB.search('teams'), 'team')
+print("Pivot table filtered : embarked, gender, class and aggregated by min fare, max fare, average fare, and count:")
+table_player_filtered = tb3.pivot_table(['embarked', 'gender', 'class'],
+                        ['fare', 'fare', 'fare', 'last'], [
+                            lambda x: min(x), lambda x: max(x),
+                            lambda x: sum(x) / len(x), lambda x: len(x)])
+[print(i) for i in table_player_filtered]
+print('')
+
+print("Pivot table sorted by position and aggregated by average passes, and average shots:")
+table_player_filtered1 = my_table_player.pivot_table(['position'], ['passes', 'shots'],
+                          [lambda x: sum(x) / len(x), lambda x: len(x),
+                           lambda x: sum(x) / len(x), lambda x: len(x)])
+[print(i) for i in table_player_filtered1]
+print('')
+
+print("Pivot table sorted by coastline and eu by average temp, min latitude, max latitude:")
+table_player_filtered2 = my_table3.pivot_table(['coastline', 'EU'],
+                                    ['temperature', 'latitude', 'latitude'],
+                                    [lambda x: sum(x) / len(x),
+                                     lambda x: min(x), lambda x: max(x)])
+[print(i) for i in table_player_filtered2]
+print('')
 
 
 # print("Test filter: only filtering out cities in Italy")
