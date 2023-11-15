@@ -211,6 +211,13 @@ table_player_filtered2 = my_table3.pivot_table(['coastline', 'EU'],
 [print(i) for i in table_player_filtered2]
 print('')
 
+print("Pivot table filtered : survived, gender, class and aggregated by survived count and fare")
+table_player_filtered = tb3.pivot_table(['class', 'gender', 'survived'],
+                        ['survived', 'fare'], [
+                        lambda x: len(x),
+                            lambda x: sum(x) / len(x)])
+[print(i) for i in table_player_filtered]
+print('')
 
 # print("Test filter: only filtering out cities in Italy")
 # my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
